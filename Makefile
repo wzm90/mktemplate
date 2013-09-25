@@ -13,10 +13,10 @@
 OPTIMIZE := -O0
 WARNINGS := -Wall -Wno-unused -Wno-format -pedantic
 DEFS :=
-EXTRA_CFLAGS :=
+EXTRA_CFLAGS := -c -g
 
 CC := cc
-CPP := clang++
+CXX := c++
 
 CFLAGS := $(EXTRA_CFLAGS) $(WARNINGS) $(OPTIMIZE) $(DEFS)
 SUFFIX := cpp
@@ -25,29 +25,28 @@ TARGET := testScoreList
 all_srcs := $(wildcard *.$(SUFFIX))
 all_objs := $(all_srcs:.$(SUFFIX)=.o)
 
-# whether to link with c++
-linkCC := 1
-
-
-#DEP := $(foreach i,$(SUFFIX),$(patsubst %.$(i),.%.d,$(all_srcs)))
-#DEP := $(foreach f,$(all_srcs),$(patsubst %.$(suffix $(f)),.%.d,$(f)))
 DEP := $(patsubst %.$(SUFFIX),.%.d,$(all_srcs))
+######################################################################
+# You do not need to modify the following commands.
+###################################################################### 
 
 PHONY = all clean cleanobj
 
 all: $(TARGET)
 
-ifeq ($(linkCC),0)
+ifeq ($(SUFFIX),c)
 $(TARGET): $(all_objs)
 	$(CC) -o $@ $^
+$(all_objs): %.o:%.$(SUFFIX)
+	$(CC) $(CFLAGS) $<
 else
 $(TARGET): $(all_objs)
-	$(CPP) -o $@ $^
+	$(CXX) -o $@ $^
+$(all_objs): %.o:%.$(SUFFIX)
+	$(CXX) $(CFLAGS) $<
 endif
 
-$(all_objs): %.o:%.$(SUFFIX)
-	$(CPP) -c $< $(CFLAGS)
-
+# automatic header file dependencies
 $(DEP): .%.d:%.$(SUFFIX)
 	@set -e; rm -rf $@; \
 	$(CC) -MM $< >$@.$$$$; \
