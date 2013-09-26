@@ -19,16 +19,15 @@ CC := cc
 CXX := c++
 
 CFLAGS := $(EXTRA_CFLAGS) $(WARNINGS) $(OPTIMIZE) $(DEFS)
-SUFFIX := cpp
-TARGET := testScoreList
+SUFFIX :=
+TARGET :=
 
-all_srcs := $(wildcard *.$(SUFFIX))
-all_objs := $(all_srcs:.$(SUFFIX)=.o)
-
-DEP := $(patsubst %.$(SUFFIX),.%.d,$(all_srcs))
 ######################################################################
 # You do not need to modify the following commands.
 ###################################################################### 
+all_srcs := $(wildcard *.$(SUFFIX))
+all_objs := $(all_srcs:.$(SUFFIX)=.o)
+DEP := $(patsubst %.$(SUFFIX),.%.d,$(all_srcs))
 
 PHONY = all clean cleanobj
 
